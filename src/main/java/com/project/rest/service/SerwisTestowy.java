@@ -27,8 +27,21 @@ public class SerwisTestowy {
 
     @PostConstruct
     private void generujDaneTestowe() {
-        if (studentService.getStudenci().size() == 0) {
-            System.out.println("DODAWANIE TESTOWEGO STUDENTA");
+        if(userRepository.findAll().size()==0)
+        {
+            Role userRole =new Role(Role.ROLE_USER);
+            Role adminRole  =new Role(Role.ROLE_ADMIN);
+            roleRepository.save(userRole);
+            roleRepository.save(adminRole);
+
+            UserEntity user = new UserEntity();
+            user.setUsername("admin");
+            user.setPassword("$2y$12$lzmKyL7n336bSHBEh435/.FDe9R3NXFyHecQk970AUcgG1CyLG6Kq"); //hasło admin
+            Set<Role> roles=new HashSet<>();
+            roles.add(adminRole);
+            user.setRoles(roles);
+            userRepository.save(user);
+
             Student student = new Student();
             student.setImie("Jan");
             student.setNazwisko("Kowalski");
@@ -36,6 +49,18 @@ public class SerwisTestowy {
             student.setEmail("student-jan@mail.com");
             student.setStacjonarny(true);
             studentService.addStudent(student);
+
+
+            UserEntity user2 = new UserEntity();
+            user2.setUsername("user");
+            user2.setPassword("$2y$12$AlRASMMqJRlrdC8A6jR0v.pBIJaGC1wm1JHMtIK24aCWGooc3FVvC"); //hasło user
+            Set<Role> roles2=new HashSet<>();
+            roles2.add(userRole);
+            user2.setRoles(roles2);
+            user2.setStudent(student);
+            userRepository.save(user2);
+
+
         }
         if (projektService.getProjekty().size() == 0) {
             System.out.println("DODAWANIE TESTOWEGO PROJEKTU");
@@ -60,30 +85,6 @@ public class SerwisTestowy {
             zadanie.setOpis("Opis zadania " + projekt.getProjektId());
             zadanie.setProjekt(projekt);
             zadanieService.addZadanie(zadanie);
-        }
-        if(userRepository.findAll().size()==0)
-        {
-            Role userRole =new Role(Role.ROLE_USER);
-            Role adminRole  =new Role(Role.ROLE_ADMIN);
-            roleRepository.save(userRole);
-            roleRepository.save(adminRole);
-
-            UserEntity user = new UserEntity();
-            user.setUsername("admin");
-            user.setPassword("$2y$12$lzmKyL7n336bSHBEh435/.FDe9R3NXFyHecQk970AUcgG1CyLG6Kq"); //hasło admin
-            Set<Role> roles=new HashSet<>();
-            roles.add(adminRole);
-            user.setRoles(roles);
-            userRepository.save(user);
-
-
-            UserEntity user2 = new UserEntity();
-            user2.setUsername("user");
-            user2.setPassword("$2y$12$AlRASMMqJRlrdC8A6jR0v.pBIJaGC1wm1JHMtIK24aCWGooc3FVvC"); //hasło user
-            Set<Role> roles2=new HashSet<>();
-            roles2.add(userRole);
-            user2.setRoles(roles2);
-            userRepository.save(user2);
         }
     }
 }

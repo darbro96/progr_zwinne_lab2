@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService{
     @Autowired
-    private UserRepository userRepository;
+    public UserRepository userRepository;
 
     public String roleOfUser(String username)
     {
@@ -17,5 +17,10 @@ public class UserServiceImpl implements UserService{
     public Long idOfUser(String username)
     {
         return userRepository.findByUsername(username).getId();
+    }
+
+    public int idOfStudent(String username)
+    {
+        return userRepository.findByUsername(username).getStudent().getStudentId();
     }
 }

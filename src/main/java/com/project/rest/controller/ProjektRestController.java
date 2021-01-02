@@ -87,9 +87,8 @@ public class ProjektRestController {
     //dodanie studenta do projektu
     @PostMapping("/stud-do-proj/{idStudenta}/{idProjektu}")
     public void studentDoProjektu(@PathVariable("idStudenta") int idStudent, @PathVariable("idProjektu") int idProjektu) {
-        if (studentService.getStudent(idStudent).isPresent())
-        {
-            Student student=studentService.getStudent(idStudent).get();
+        if (studentService.getStudent(idStudent).isPresent()) {
+            Student student = studentService.getStudent(idStudent).get();
             if (projektService.getProjekt(idProjektu).isPresent()) {
                 Projekt projekt = projektService.getProjekt(idProjektu).get();
                 projekt.getStudenci().add(student);
@@ -99,9 +98,8 @@ public class ProjektRestController {
 
     //usunięcie projektu o danym id
     @DeleteMapping("/usunProjekt/{id}")
-    public void usunProjekt(@PathVariable("id") int projektId)
-    {
-        Projekt projekt=projektService.getProjekt(projektId).get();
+    public void usunProjekt(@PathVariable("id") int projektId) {
+        Projekt projekt = projektService.getProjekt(projektId).get();
         projektService.deleteProject(projekt);
     }
 
@@ -119,10 +117,9 @@ public class ProjektRestController {
 
     //dodanie nowego zadania
     @PostMapping("/addzadanie")
-    public void addZadanie(@RequestParam("nazwa") String nazwa, @RequestParam("opis") String opis, @RequestParam("kolejnosc") int kolejnosc, @RequestParam("oddanie") String oddanie, @RequestParam("idProjektu") int projektId)
-    {
-        Projekt projekt=projektService.getProjekt(projektId).get();
-        Zadanie zadanie=new Zadanie();
+    public void addZadanie(@RequestParam("nazwa") String nazwa, @RequestParam("opis") String opis, @RequestParam("kolejnosc") int kolejnosc, @RequestParam("oddanie") String oddanie, @RequestParam("idProjektu") int projektId) {
+        Projekt projekt = projektService.getProjekt(projektId).get();
+        Zadanie zadanie = new Zadanie();
         zadanie.setProjekt(projekt);
         zadanie.setOpis(opis);
         zadanie.setNazwa(nazwa);
@@ -133,46 +130,51 @@ public class ProjektRestController {
 
     //usunięcie zadania na podstawie id
     @DeleteMapping("/usunzadanie/{id}")
-    public void usunZadanie(@PathVariable("id") int idZadanie)
-    {
+    public void usunZadanie(@PathVariable("id") int idZadanie) {
         zadanieService.usunZadanie(zadanieService.getZadanie(idZadanie).get());
     }
 
     //pobranie listy projeków powiązanych ze studentem
     @GetMapping("/projekty-student/{id}")
-    public Set<Projekt> projektyStudenta(@PathVariable("id") int id)
-    {
+    public Set<Projekt> projektyStudenta(@PathVariable("id") int id) {
         return studentService.getStudent(id).get().getProjekty();
     }
 
     //pobranie listy zadań z danego projektu
     @GetMapping("/zadania-z-projektu/{id}")
-    public List<Zadanie> zadaniaZProjektu(@PathVariable("id") int id)
-    {
-        Projekt projekt=projektService.getProjekt(id).get();
+    public List<Zadanie> zadaniaZProjektu(@PathVariable("id") int id) {
+        Projekt projekt = projektService.getProjekt(id).get();
         return zadanieService.zadaniaZProjektu(projekt);
     }
 
     //wszyscy studenci
     @GetMapping("/studenci")
     @Secured(Role.ROLE_ADMIN) //dostęp tylko admin
-    public List<Student> studenci()
-    {
+    public List<Student> studenci() {
         return studentService.getStudenci();
     }
 
     //rola aktualnie zalogowane użytkownika
     @GetMapping("/myrole")
-    public String whoAmI()
-    {
+    public String whoAmI() {
         return userService.roleOfUser(AuthenticationBean.getLoggedUser());
     }
 
     //id aktualnie zalogowanego użytkownika
-    @GetMapping("/myid")
-    public Long myId()
-    {
+    @GetMapping("/myiduser")
+    public Long myIdUser() {
         return userService.idOfUser(AuthenticationBean.getLoggedUser());
+    }
+
+    //id studenta zalogowanego (null jeśli to nie student)
+    @GetMapping("/myidstudent")
+    @Secured(Role.ROLE_USER) //może wywołać tylko zwykły user
+    public Integer myIdStudent() {
+        try {
+            return userService.idOfStudent(AuthenticationBean.getLoggedUser());
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 }
 

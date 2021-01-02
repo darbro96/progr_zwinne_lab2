@@ -1,5 +1,6 @@
 package com.project.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,14 +17,13 @@ public class UserEntity {
     @Column(name = "USER_ID")
     private Long id;
     private String username;
+    @JsonIgnore
     private String password;
-    // bi-directional many-to-many association to Role
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "USER_ID") }, inverseJoinColumns = { @JoinColumn(name = "ROLE_ID") })
     private Set<Role> roles;
-
-    public UserEntity(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
+    @OneToOne
+    @JoinColumn(name = "student_id")
+    private Student student;
 }
