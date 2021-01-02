@@ -152,4 +152,12 @@ public class ProjektRestController {
         Projekt projekt=projektService.getProjekt(id).get();
         return zadanieService.zadaniaZProjektu(projekt);
     }
+
+    //wszyscy studenci
+    @GetMapping("/studenci")
+    @Secured(Role.ROLE_ADMIN) //dostęp tylko admin
+    public List<Student> studenci()
+    {
+        return studentService.getStudenci();
+    }
 }
