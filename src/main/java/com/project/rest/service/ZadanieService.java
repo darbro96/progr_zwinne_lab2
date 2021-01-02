@@ -1,5 +1,6 @@
 package com.project.rest.service;
 
+import com.project.rest.model.Projekt;
 import com.project.rest.model.Zadanie;
 
 import java.util.List;
@@ -10,4 +11,5 @@ public interface ZadanieService {
     List<Zadanie> getZadania();
     void addZadanie(Zadanie zadanie);
     void usunZadanie(Zadanie zadanie);
+    List<Zadanie> zadaniaZProjektu(Projekt projekt);
 }

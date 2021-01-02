@@ -139,4 +139,12 @@ public class ProjektRestController {
     {
         return studentService.getStudent(id).get().getProjekty();
     }
+
+    //pobranie listy zadań z danego projektu
+    @GetMapping("/zadania-z-projektu/{id}")
+    public List<Zadanie> zadaniaZProjektu(@PathVariable("id") int id)
+    {
+        Projekt projekt=projektService.getProjekt(id).get();
+        return zadanieService.zadaniaZProjektu(projekt);
+    }
 }

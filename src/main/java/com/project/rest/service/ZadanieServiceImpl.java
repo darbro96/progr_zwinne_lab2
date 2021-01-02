@@ -1,5 +1,6 @@
 package com.project.rest.service;
 
+import com.project.rest.model.Projekt;
 import com.project.rest.model.Zadanie;
 import com.project.rest.repository.ZadanieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,11 @@ public class ZadanieServiceImpl implements ZadanieService {
     @Override
     public void usunZadanie(Zadanie zadanie) {
         zadanieRepository.delete(zadanie);
+    }
+
+    @Override
+    public List<Zadanie> zadaniaZProjektu(Projekt projekt) {
+        return zadanieRepository.zadaniaZProjektu(projekt.getProjektId());
     }
 
 
