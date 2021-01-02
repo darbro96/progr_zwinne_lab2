@@ -5,22 +5,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     @Autowired
-    public UserRepository userRepository;
+    private UserRepository userRepository;
 
-    public String roleOfUser(String username)
-    {
+    public String roleOfUser(String username) {
         return userRepository.findByUsername(username).getRoles().iterator().next().getName();
     }
 
-    public Long idOfUser(String username)
-    {
+    public Long idOfUser(String username) {
         return userRepository.findByUsername(username).getId();
     }
 
-    public int idOfStudent(String username)
-    {
+    public int idOfStudent(String username) {
         return userRepository.findByUsername(username).getStudent().getStudentId();
     }
 }
