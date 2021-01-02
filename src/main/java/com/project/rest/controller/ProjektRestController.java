@@ -43,7 +43,7 @@ public class ProjektRestController {
     }
 
     //pobranie wybranego projektu na podstawie id
-    @GetMapping("/projekt/{id}")
+    @GetMapping("/projekty/{id}")
     public Optional<Projekt> getProjekt(@PathVariable("id") int idProjekt) {
         return projektService.getProjekt(idProjekt);
     }
