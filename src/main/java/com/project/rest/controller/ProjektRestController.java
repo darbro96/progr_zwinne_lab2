@@ -31,17 +31,19 @@ public class ProjektRestController {
 //        this.projektService = projektService;
 //    }
 
+    //pobranie wszystkich projektów
     @GetMapping("/projekty")
     public List<Projekt> getProjekty() {
         return projektService.getProjekty();
     }
 
+    //pobranie wybranego projektu na podstawie id
     @GetMapping("/projekt/{id}")
     public Optional<Projekt> getProjekt(@PathVariable("id") int idProjekt) {
         return projektService.getProjekt(idProjekt);
     }
 
-    //UWAGA TO JEST REST DO USUNIĘCIA
+    //UWAGA TO JEST REST DO USUNIĘCIA (testowy)
     @GetMapping("/dodajZadanieTestowe/{idProjektu}")
     public void testowaMetoda(@PathVariable("idProjektu") int idProjekt) throws Exception {
         Projekt projekt = getProjekt(idProjekt).get();
@@ -54,6 +56,7 @@ public class ProjektRestController {
         zadanieService.addZadanie(zadanie);
     }
 
+    //dodanie nowego projektu
     @PostMapping("/addProjekt")
     public void addProjekt(@RequestParam(value = "nazwa") String nazwa, @RequestParam(value = "opis") String opis, @RequestParam("oddanie") String oddanie) {
         Projekt projekt = new Projekt();
@@ -89,6 +92,7 @@ public class ProjektRestController {
         }
     }
 
+    //usunięcie projektu o danym id
     @DeleteMapping("/usunProjekt/{id}")
     public void usunProjekt(@PathVariable("id") int projektId)
     {
@@ -96,16 +100,19 @@ public class ProjektRestController {
         projektService.deleteProject(projekt);
     }
 
+    //pobranie wszystkich zadań
     @GetMapping("/zadania")
     public List<Zadanie> getZadania() {
         return zadanieService.getZadania();
     }
 
+    //pobranie wybranego zadania na podstawie id
     @GetMapping("/zadanie/{id}")
     public Optional<Zadanie> getZadanie(@PathVariable("id") int zadanieId) {
         return zadanieService.getZadanie(zadanieId);
     }
 
+    //dodanie nowego zadania
     @PostMapping("/addzadanie")
     public void addZadanie(@RequestParam("nazwa") String nazwa, @RequestParam("opis") String opis, @RequestParam("kolejnosc") int kolejnosc, @RequestParam("oddanie") String oddanie, @RequestParam("idProjektu") int projektId)
     {
@@ -119,12 +126,14 @@ public class ProjektRestController {
         zadanieService.addZadanie(zadanie);
     }
 
+    //usunięcie zadania na podstawie id
     @DeleteMapping("/usunzadanie/{id}")
     public void usunZadanie(@PathVariable("id") int idZadanie)
     {
         zadanieService.usunZadanie(zadanieService.getZadanie(idZadanie).get());
     }
 
+    //pobranie listy projeków powiązanych ze studentem
     @GetMapping("/projekty-student/{id}")
     public Set<Projekt> projektyStudenta(@PathVariable("id") int id)
     {
