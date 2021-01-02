@@ -30,11 +30,6 @@ public class ProjektRestController {
     @Autowired
     private StudentServiceImpl studentService;
 
-//    @Autowired
-//    public ProjektRestController(ProjektService projektService) {
-//        this.projektService = projektService;
-//    }
-
     //pobranie wszystkich projektów
     @GetMapping("/projekty")
     @Secured(Role.ROLE_ADMIN)
