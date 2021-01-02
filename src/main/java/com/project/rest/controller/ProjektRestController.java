@@ -77,7 +77,7 @@ public class ProjektRestController {
 
     //dodanie studenta do projektu
     @PostMapping("/stud-do-proj/{idStudenta}/{idProjektu}")
-    public void studentDoProjektu(@PathVariable("idStudenta") int idStudent, @PathVariable("idProjekty") int idProjektu) {
+    public void studentDoProjektu(@PathVariable("idStudenta") int idStudent, @PathVariable("idProjektu") int idProjektu) {
         if (studentService.getStudent(idStudent).isPresent())
         {
             Student student=studentService.getStudent(idStudent).get();
