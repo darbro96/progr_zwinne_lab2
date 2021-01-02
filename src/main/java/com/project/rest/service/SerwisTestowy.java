@@ -1,8 +1,8 @@
 package com.project.rest.service;
 
-import com.project.rest.model.Projekt;
-import com.project.rest.model.Student;
-import com.project.rest.model.Zadanie;
+import com.project.rest.model.*;
+import com.project.rest.repository.RoleRepository;
+import com.project.rest.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +20,10 @@ public class SerwisTestowy {
     private ZadanieServiceImpl zadanieService;
     @Autowired
     private StudentServiceImpl studentService;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @PostConstruct
     private void generujDaneTestowe() {
@@ -56,6 +60,30 @@ public class SerwisTestowy {
             zadanie.setOpis("Opis zadania " + projekt.getProjektId());
             zadanie.setProjekt(projekt);
             zadanieService.addZadanie(zadanie);
+        }
+        if(userRepository.findAll().size()==0)
+        {
+            Role userRole =new Role(Role.ROLE_USER);
+            Role adminRole  =new Role(Role.ROLE_ADMIN);
+            roleRepository.save(userRole);
+            roleRepository.save(adminRole);
+
+            UserEntity user = new UserEntity();
+            user.setUsername("admin");
+            user.setPassword("$2y$12$lzmKyL7n336bSHBEh435/.FDe9R3NXFyHecQk970AUcgG1CyLG6Kq"); //hasło admin
+            Set<Role> roles=new HashSet<>();
+            roles.add(adminRole);
+            user.setRoles(roles);
+            userRepository.save(user);
+
+
+            UserEntity user2 = new UserEntity();
+            user2.setUsername("user");
+            user2.setPassword("$2y$12$AlRASMMqJRlrdC8A6jR0v.pBIJaGC1wm1JHMtIK24aCWGooc3FVvC"); //hasło user
+            Set<Role> roles2=new HashSet<>();
+            roles2.add(userRole);
+            user2.setRoles(roles2);
+            userRepository.save(user2);
         }
     }
 }

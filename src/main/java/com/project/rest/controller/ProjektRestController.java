@@ -1,11 +1,15 @@
 package com.project.rest.controller;
 
 import com.project.rest.model.Projekt;
+import com.project.rest.model.Role;
 import com.project.rest.model.Student;
 import com.project.rest.model.Zadanie;
-import com.project.rest.service.*;
+import com.project.rest.service.ProjektServiceImpl;
+import com.project.rest.service.StudentServiceImpl;
+import com.project.rest.service.ZadanieServiceImpl;
 import com.project.rest.utilities.MyUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -33,6 +37,7 @@ public class ProjektRestController {
 
     //pobranie wszystkich projektów
     @GetMapping("/projekty")
+    @Secured(Role.ROLE_ADMIN)
     public List<Projekt> getProjekty() {
         return projektService.getProjekty();
     }
