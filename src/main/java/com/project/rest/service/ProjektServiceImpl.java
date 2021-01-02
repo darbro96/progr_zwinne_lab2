@@ -2,6 +2,7 @@ package com.project.rest.service;
 
 import com.project.rest.model.Projekt;
 import com.project.rest.repository.ProjektRepository;
+import com.project.rest.utilities.MyUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,27 +22,31 @@ public class ProjektServiceImpl implements ProjektService {
     }
 
     @Override
-    public Optional<Projekt> getProjekt(Integer projektId) {
+    public Optional<Projekt> getProjekt(int projektId) {
         return projektRepository.findById(projektId);
     }
 
+    @Override
     public List<Projekt> getProjekty()
     {
         return projektRepository.findAll();
     }
 
-    @PostConstruct
-    public void testowyProjekt()
+    @Override
+    public void addProject(Projekt projekt)
     {
-        if(getProjekty().size()==0)
-        {
-            Projekt projekt=new Projekt();
-            projekt.setOpis("Opis projektu");
-            projekt.setNazwa("Projekt1");
-            projekt.setDataOddania(LocalDate.of(2020,1,10));
-            projekt.setDataczasUtworzenia(LocalDateTime.now());
-            projektRepository.save(projekt);
-            System.out.println("Projekt w bazie!!!");
-        }
+        projektRepository.save(projekt);
     }
+
+    @Override
+    public void deleteProject(Projekt projekt) {
+        projektRepository.delete(projekt);
+    }
+
+    @Override
+    public void updateProjekt(Projekt projekt) {
+        projektRepository.updateProjekt(projekt.getNazwa(),projekt.getOpis(), MyUtilities.dateToString(projekt.getDataOddania()),projekt.getProjektId());
+    }
+
+
 }

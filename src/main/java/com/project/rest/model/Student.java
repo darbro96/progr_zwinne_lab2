@@ -1,5 +1,6 @@
 package com.project.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,6 +28,7 @@ public class Student {
     @Column(name = "stacjonarny", nullable = false)
     private boolean stacjonarny;
     @ManyToMany(mappedBy = "studenci")
+    @JsonIgnoreProperties("studenci") //bez tego był problem z generowaniem JSON
     private Set<Projekt> projekty;
 
     public Student() {

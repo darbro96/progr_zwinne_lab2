@@ -1,8 +1,7 @@
 package com.project.rest.model;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -35,6 +34,7 @@ public class Projekt {
     @Column(name = "data_oddania")
     private LocalDate dataOddania;
     @OneToMany(mappedBy = "projekt")
+    @JsonIgnoreProperties("projekt") //bez tego był problem z generowaniem JSON
     private List<Zadanie> zadania;
     @ManyToMany
     @JoinTable(name = "projekt_student", joinColumns = {@JoinColumn(name = "projekt_id")}, inverseJoinColumns = {
