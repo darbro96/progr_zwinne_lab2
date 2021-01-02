@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -122,5 +123,11 @@ public class ProjektRestController {
     public void usunZadanie(@PathVariable("id") int idZadanie)
     {
         zadanieService.usunZadanie(zadanieService.getZadanie(idZadanie).get());
+    }
+
+    @GetMapping("/projekty-student/{id}")
+    public Set<Projekt> projektyStudenta(@PathVariable("id") int id)
+    {
+        return studentService.getStudent(id).get().getProjekty();
     }
 }
