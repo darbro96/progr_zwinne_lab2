@@ -1,11 +1,13 @@
 package com.project.rest.controller;
 
+import com.project.rest.bean.AuthenticationBean;
 import com.project.rest.model.Projekt;
 import com.project.rest.model.Role;
 import com.project.rest.model.Student;
 import com.project.rest.model.Zadanie;
 import com.project.rest.service.ProjektServiceImpl;
 import com.project.rest.service.StudentServiceImpl;
+import com.project.rest.service.UserServiceImpl;
 import com.project.rest.service.ZadanieServiceImpl;
 import com.project.rest.utilities.MyUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class ProjektRestController {
 
     @Autowired
     private StudentServiceImpl studentService;
+
+    @Autowired
+    private UserServiceImpl userService;
 
     //pobranie wszystkich projektów
     @GetMapping("/projekty")
@@ -155,4 +160,19 @@ public class ProjektRestController {
     {
         return studentService.getStudenci();
     }
+
+    //rola aktualnie zalogowane użytkownika
+    @GetMapping("/myrole")
+    public String whoAmI()
+    {
+        return userService.roleOfUser(AuthenticationBean.getLoggedUser());
+    }
+
+    //id aktualnie zalogowanego użytkownika
+    @GetMapping("/myid")
+    public Long myId()
+    {
+        return userService.idOfUser(AuthenticationBean.getLoggedUser());
+    }
 }
+
