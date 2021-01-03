@@ -1,5 +1,6 @@
 package com.project.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,5 +26,6 @@ public class Zadanie {
     private LocalDateTime dataczasOddania;
     @ManyToOne
     @JoinColumn(name = "projekt_id")
+    @JsonIgnore
     private Projekt projekt;
 }
