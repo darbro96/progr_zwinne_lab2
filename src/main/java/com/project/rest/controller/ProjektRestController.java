@@ -176,5 +176,13 @@ public class ProjektRestController {
             return null;
         }
     }
+
+    //dane wybranego studenta
+    @GetMapping("/student/{id}")
+    @Secured(Role.ROLE_ADMIN) //dostęp tylko admin
+    public Student getStudent(@PathVariable("id") int id)
+    {
+        return studentService.getStudent(id).get();
+    }
 }
 
