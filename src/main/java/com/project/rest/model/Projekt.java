@@ -43,4 +43,11 @@ public class Projekt {
 
     public Projekt() {
     }
+     public Projekt(Integer projektId, String nazwa, String opis, LocalDateTime dataczasUtworzenia, LocalDate dataOddania ) {
+        this.projektId=projektId;
+        this.nazwa=nazwa;
+        this.opis=opis;
+        this.dataczasUtworzenia=dataczasUtworzenia;
+        this.dataOddania=dataOddania;
+    }
 }
