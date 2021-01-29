@@ -4,6 +4,7 @@ import com.project.rest.model.Projekt;
 import com.project.rest.repository.ProjektRepository;
 import com.project.rest.service.ProjektService;
 import com.project.rest.service.ProjektServiceImpl;
+import com.project.rest.service.SerwisTestowy;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.awt.print.Pageable;
 import java.time.LocalDate;
@@ -36,18 +39,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @SpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser(username = "admin", password = "admin")
+@WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
 class ProjectRestApiApplicationTests {
-	private final String apiPath = "http://localhost:8443/api/projekty";
+	private final String apiPath = "https://localhost:8443/api/projekty/1";
 	@MockBean
 	private ProjektServiceImpl mockProjektService;
+
+	@MockBean
+	private SerwisTestowy serwisTestowy;
 
 	//@InjectMocks
 	//private ProjektServiceImpl mockProjektService;
@@ -64,20 +68,40 @@ class ProjectRestApiApplicationTests {
 	//	MockitoAnnotations.initMocks(this);
 //	}
 
+
+
 	@Test
 	public void getProjekt() throws Exception {
 		Projekt projekt = new Projekt(1, "Nazwa1", "Opis1", LocalDateTime.now(), LocalDate.of(2020, 6, 7));
 
+		//mockProjektService.addProject(projekt);
+
 		when(mockProjektService.getProjekt(projekt.getProjektId()))
 				.thenReturn(Optional.of(projekt));
 
-		mockMvc.perform(get(apiPath).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get(apiPath).contentType("application/json"))
 				.andDo(print())
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.content[*]").exists()) //content[*] - oznacza całą zawartość tablicy content
-				.andExpect(jsonPath("$.content.length()").value(1))
-				.andExpect(jsonPath("$.content[0].projektId").value(projekt.getProjektId()))
-				.andExpect(jsonPath("$.content[0].nazwa").value(projekt.getNazwa()));
+				//.andExpect(jsonPath("$.content[*]").exists()) //content[*] - oznacza całą zawartość tablicy content
+				//.andExpect(jsonPath("$.content.length()").value(1))
+				.andExpect(jsonPath("$.projektId").value(projekt.getProjektId()))
+				.andExpect(jsonPath("$.nazwa").value(projekt.getNazwa()));
+
+		//mockMvc.perform(get("https://localhost:8443/api/projekty/1"))
+		//				.andExpect(status().isOk())
+		//				.andExpect(content().contentType("application/json"))
+		//				.andDo(print())
+		//				.andExpect(jsonPath("$.projektId").value(1))
+		//				.andExpect(status().isOk());
+		//				//.andExpect(jsonPath("$.").exists());
+
+		//mockMvc.perform(get(apiPath).contentType(MediaType.APPLICATION_JSON))
+		//		.andDo(print())
+		//		.andExpect(status().isOk())
+		//		.andExpect(jsonPath("$.content[*]").exists()); //content[*] - oznacza całą zawartość tablicy content
+				//.andExpect(jsonPath("$.content.length()").value(1))
+				//.andExpect(jsonPath("$.content[0].projektId").value(projekt.getProjektId()))
+				//.andExpect(jsonPath("$.content[0].nazwa").value(projekt.getNazwa()));
 
 		verify(mockProjektService, times(1)).getProjekt(projekt.getProjektId());
 		verifyNoMoreInteractions(mockProjektService);
@@ -99,8 +123,12 @@ class ProjectRestApiApplicationTests {
 
 	}*/
 	@Test
-	void contextLoads() {
+	void contextLoads() throws Exception {
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+				.get(apiPath).accept(MediaType.APPLICATION_JSON)).andReturn();
+		String content = result.getResponse().getContentAsString();
+		System.out.println(content);
+
 	}
 
 }
-
