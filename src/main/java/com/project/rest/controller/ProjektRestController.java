@@ -1,10 +1,7 @@
 package com.project.rest.controller;
 
 import com.project.rest.bean.AuthenticationBean;
-import com.project.rest.model.Projekt;
-import com.project.rest.model.Role;
-import com.project.rest.model.Student;
-import com.project.rest.model.Zadanie;
+import com.project.rest.model.*;
 import com.project.rest.service.ProjektServiceImpl;
 import com.project.rest.service.StudentServiceImpl;
 import com.project.rest.service.UserServiceImpl;
@@ -170,6 +167,18 @@ public class ProjektRestController {
     @Secured(Role.ROLE_ADMIN) //dostęp tylko admin
     public void usunStudentaZProjektu(@PathVariable("idProjektu") int idProjektu, @PathVariable("idStudenta") int idStudenta) {
         projektService.usunStudentaZProjektu(projektService.getProjekt(idProjektu).get(), studentService.getStudent(idStudenta).get());
+    }
+
+    //nowy student
+    @PostMapping("/nowyStudent")
+    public void nowyStudent(@RequestParam("imie") String imie, @RequestParam("nazwisko") String nazwisko, @RequestParam("nr_indeksu") String index, @RequestParam("email") String email, @RequestParam("stacjonarny") boolean stacjonarny) {
+        Student student=new Student();
+        student.setImie(imie);
+        student.setNazwisko(nazwisko);
+        student.setNrIndeksu(index);
+        student.setEmail(email);
+        student.setStacjonarny(stacjonarny);
+        studentService.addStudent(student);
     }
 
 }

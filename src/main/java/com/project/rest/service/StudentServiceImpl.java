@@ -11,10 +11,12 @@ import java.util.Optional;
 @Service
 public class StudentServiceImpl implements StudentService {
     private StudentRepository studentRepository;
+    private UserServiceImpl userService;
 
     @Autowired
-    public StudentServiceImpl(StudentRepository studentRepository) {
+    public StudentServiceImpl(StudentRepository studentRepository, UserServiceImpl userService) {
         this.studentRepository = studentRepository;
+        this.userService=userService;
     }
 
     @Override
@@ -31,5 +33,6 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void addStudent(Student student) {
         studentRepository.save(student);
+        userService.createNewUser(student);
     }
 }
