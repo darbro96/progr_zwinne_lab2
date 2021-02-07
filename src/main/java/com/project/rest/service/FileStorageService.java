@@ -9,12 +9,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FileStorageService {
@@ -45,7 +48,10 @@ public class FileStorageService {
 
             // Copy file to the target location (Replacing existing file with the same name)
             Path targetLocation = this.fileStorageLocation.resolve(projektId + "/" + fileName);
-            Files.createDirectory(Paths.get(DIR + "/" + projektId));
+            if(!Files.exists(Paths.get(DIR + "/" + projektId)))
+            {
+                Files.createDirectory(Paths.get(DIR + "/" + projektId));
+            }
 
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
@@ -55,9 +61,9 @@ public class FileStorageService {
         }
     }
 
-    public Resource loadFileAsResource(String fileName) {
+    public Resource loadFileAsResource(String fileName, int idProject) {
         try {
-            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
+            Path filePath = this.fileStorageLocation.resolve(idProject+"/"+fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if (resource.exists()) {
                 return resource;
@@ -67,5 +73,17 @@ public class FileStorageService {
         } catch (MalformedURLException ex) {
             throw new MyFileNotFoundException("File not found " + fileName, ex);
         }
+    }
+
+    public List<String> filesFromProject(int idProject)
+    {
+        File f = new File(DIR+"/"+idProject);
+        String[] files=f.list();
+        List<String> listOfFiles=new ArrayList<>();
+        for(String s:files)
+        {
+            listOfFiles.add("https://localhost:8443/downloadFile/"+idProject+"/"+s);
+        }
+        return listOfFiles;
     }
 }

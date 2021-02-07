@@ -149,7 +149,7 @@ public class ProjektRestController {
 
     //wszyscy studenci
     @GetMapping("/studenci")
-    @Secured(Role.ROLE_ADMIN) //dostęp tylko admin
+    @Secured(Role.ROLE_ADMIN) //dostęp tylko admin (prowadzący)
     public List<Student> studenci() {
         return studentService.getStudenci();
     }
@@ -169,9 +169,9 @@ public class ProjektRestController {
     //id studenta zalogowanego (null jeśli to nie student)
     @GetMapping("/myidstudent")
     @Secured(Role.ROLE_USER) //może wywołać tylko zwykły user
-    public Integer myIdStudent() {
+    public String myIdStudent() {
         try {
-            return userService.idOfStudent(AuthenticationBean.getLoggedUser());
+            return String.valueOf(userService.idOfStudent(AuthenticationBean.getLoggedUser()));
         } catch (NullPointerException ex) {
             return null;
         }

@@ -15,6 +15,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +29,7 @@ public class FileController {
     @Autowired
     private FileStorageService fileStorageService;
 
+    //Upload pliku
     @PostMapping("/uploadFile")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("projekt_id") int projektId) {
         String fileName = fileStorageService.storeFile(file, projektId);
@@ -40,10 +43,11 @@ public class FileController {
                 file.getContentType(), file.getSize());
     }
 
-    @GetMapping("/downloadFile/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+    //Pobieranie pliku
+    @GetMapping("/downloadFile/{projekt_id}/{fileName}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request, @PathVariable("projekt_id") int projektId) {
         // Load file as Resource
-        Resource resource = fileStorageService.loadFileAsResource(fileName);
+        Resource resource = fileStorageService.loadFileAsResource(fileName,projektId);
 
         // Try to determine file's content type
         String contentType = null;
@@ -62,5 +66,12 @@ public class FileController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
+    }
+
+    //Lista odnośników do plików z projektu
+    @GetMapping("/files/{projektId}")
+    public List<String> listOfFilesFromProject(@RequestParam("projekt_id") int projektId)
+    {
+        return fileStorageService.filesFromProject(projektId);
     }
 }
