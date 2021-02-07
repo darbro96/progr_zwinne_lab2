@@ -1,6 +1,7 @@
 package com.project.rest.service;
 
 import com.project.rest.model.Projekt;
+import com.project.rest.model.Student;
 import com.project.rest.repository.ProjektRepository;
 import com.project.rest.utilities.MyUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,16 @@ public class ProjektServiceImpl implements ProjektService {
     @Override
     public void updateProjekt(Projekt projekt) {
         projektRepository.updateProjekt(projekt.getNazwa(),projekt.getOpis(), MyUtilities.dateToString(projekt.getDataOddania()),projekt.getProjektId());
+    }
+
+    public void studentDoProjektu(Projekt projekt, Student student)
+    {
+        projektRepository.studentToProject(projekt.getProjektId(),student.getStudentId());
+    }
+
+    public void usunStudentaZProjektu(Projekt projekt, Student student)
+    {
+        projektRepository.usunStudentaZProjektu(projekt.getProjektId(),student.getStudentId());
     }
 
 

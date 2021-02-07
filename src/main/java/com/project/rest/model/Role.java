@@ -31,34 +31,11 @@ public class Role implements Serializable {
 
     private String name;
 
-    // bi-directional many-to-many association to User
     @ManyToMany(mappedBy = "roles")
     private Set<UserEntity> users;
 
     public Role(String name) {
         this.name = name;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        return Objects.equals(name, ((Role) obj).getName());
     }
 
     @Override

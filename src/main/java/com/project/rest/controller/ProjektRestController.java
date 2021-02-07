@@ -48,19 +48,6 @@ public class ProjektRestController {
         return projektService.getProjekt(idProjekt);
     }
 
-    //UWAGA TO JEST REST DO USUNIĘCIA (testowy)
-    @GetMapping("/dodajZadanieTestowe/{idProjektu}")
-    public void testowaMetoda(@PathVariable("idProjektu") int idProjekt) throws Exception {
-        Projekt projekt = getProjekt(idProjekt).get();
-        Zadanie zadanie = new Zadanie();
-        zadanie.setDataczasOddania(LocalDateTime.of(2021, 01, 03, 22, 30));
-        zadanie.setKolejnosc(1);
-        zadanie.setNazwa("Zadanie " + projekt.getProjektId());
-        zadanie.setOpis("Opis zadania " + projekt.getProjektId());
-        zadanie.setProjekt(projekt);
-        zadanieService.addZadanie(zadanie);
-    }
-
     //dodanie nowego projektu
     @PostMapping("/addProjekt")
     public void addProjekt(@RequestParam(value = "nazwa") String nazwa, @RequestParam(value = "opis") String opis, @RequestParam("oddanie") String oddanie) {
@@ -87,13 +74,7 @@ public class ProjektRestController {
     //dodanie studenta do projektu
     @PostMapping("/stud-do-proj/{idStudenta}/{idProjektu}")
     public void studentDoProjektu(@PathVariable("idStudenta") int idStudent, @PathVariable("idProjektu") int idProjektu) {
-        if (studentService.getStudent(idStudent).isPresent()) {
-            Student student = studentService.getStudent(idStudent).get();
-            if (projektService.getProjekt(idProjektu).isPresent()) {
-                Projekt projekt = projektService.getProjekt(idProjektu).get();
-                projekt.getStudenci().add(student);
-            }
-        }
+        projektService.studentDoProjektu(projektService.getProjekt(idProjektu).get(), studentService.getStudent(idStudent).get());
     }
 
     //usunięcie projektu o danym id
@@ -180,9 +161,16 @@ public class ProjektRestController {
     //dane wybranego studenta
     @GetMapping("/student/{id}")
     @Secured(Role.ROLE_ADMIN) //dostęp tylko admin
-    public Student getStudent(@PathVariable("id") int id)
-    {
+    public Student getStudent(@PathVariable("id") int id) {
         return studentService.getStudent(id).get();
     }
+
+    //usunięcie studenta z projektu
+    @DeleteMapping("usunZProjektu/{idProjektu}/{idStudenta}")
+    @Secured(Role.ROLE_ADMIN) //dostęp tylko admin
+    public void usunStudentaZProjektu(@PathVariable("idProjektu") int idProjektu, @PathVariable("idStudenta") int idStudenta) {
+        projektService.usunStudentaZProjektu(projektService.getProjekt(idProjektu).get(), studentService.getStudent(idStudenta).get());
+    }
+
 }
 
