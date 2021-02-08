@@ -2,6 +2,7 @@ package com.project.rest.controller;
 
 import com.project.rest.model.UploadFileResponse;
 import com.project.rest.service.FileStorageService;
+import com.project.rest.utilities.Track;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -66,8 +68,8 @@ public class FileController {
     }
 
     //Lista odnośników do plików z projektu
-    @GetMapping("/files/{projektId}")
-    public List<String> listOfFilesFromProject(@RequestParam("projekt_id") int projektId)
+    @GetMapping("/files")
+    public List<Track> listOfFilesFromProject(@RequestParam("projekt_id") int projektId)
     {
         return fileStorageService.filesFromProject(projektId);
     }

@@ -2,6 +2,7 @@ package com.project.rest.service;
 
 import com.project.rest.utilities.FileStorageException;
 import com.project.rest.utilities.MyFileNotFoundException;
+import com.project.rest.utilities.Track;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -48,8 +49,7 @@ public class FileStorageService {
 
             // Copy file to the target location (Replacing existing file with the same name)
             Path targetLocation = this.fileStorageLocation.resolve(projektId + "/" + fileName);
-            if(!Files.exists(Paths.get(DIR + "/" + projektId)))
-            {
+            if (!Files.exists(Paths.get(DIR + "/" + projektId))) {
                 Files.createDirectory(Paths.get(DIR + "/" + projektId));
             }
 
@@ -63,7 +63,7 @@ public class FileStorageService {
 
     public Resource loadFileAsResource(String fileName, int idProject) {
         try {
-            Path filePath = this.fileStorageLocation.resolve(idProject+"/"+fileName).normalize();
+            Path filePath = this.fileStorageLocation.resolve(idProject + "/" + fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if (resource.exists()) {
                 return resource;
@@ -75,14 +75,12 @@ public class FileStorageService {
         }
     }
 
-    public List<String> filesFromProject(int idProject)
-    {
-        File f = new File(DIR+"/"+idProject);
-        String[] files=f.list();
-        List<String> listOfFiles=new ArrayList<>();
-        for(String s:files)
-        {
-            listOfFiles.add("https://localhost:8443/downloadFile/"+idProject+"/"+s);
+    public List<Track> filesFromProject(int idProject) {
+        File f = new File(DIR + "/" + idProject);
+        String[] files = f.list();
+        List<Track> listOfFiles = new ArrayList<>();
+        for (String s : files) {
+            listOfFiles.add(new Track("https://localhost:8443/downloadFile/" + idProject + "/" + s, s));
         }
         return listOfFiles;
     }
