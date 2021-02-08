@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -46,30 +47,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
 class ProjectRestApiApplicationTests {
-	private final String apiPath = "https://localhost:8443/api/projekty/1";
+	private final String apiPath = "https://localhost:8443/api/projekty";
 	@MockBean
 	private ProjektServiceImpl mockProjektService;
 
 	@MockBean
 	private SerwisTestowy serwisTestowy;
 
-	//@InjectMocks
-	//private ProjektServiceImpl mockProjektService;
-
-	//@Mock
-	//private ProjektRepository projektRepository;
-
 	@Autowired
 	private MockMvc mockMvc;
 
 	private JacksonTester<Projekt> jacksonTester;
-	//@Before()
-	//public void init(){
-	//	MockitoAnnotations.initMocks(this);
-//	}
-
-
-
+	
 	@Test
 	public void getProjekt() throws Exception {
 		Projekt projekt = new Projekt(1, "Nazwa1", "Opis1", LocalDateTime.now(), LocalDate.of(2020, 6, 7));
@@ -79,33 +68,34 @@ class ProjectRestApiApplicationTests {
 		when(mockProjektService.getProjekt(projekt.getProjektId()))
 				.thenReturn(Optional.of(projekt));
 
-		mockMvc.perform(get(apiPath).contentType("application/json"))
+		mockMvc.perform(get(apiPath+"/1").contentType("application/json"))
 				.andDo(print())
 				.andExpect(status().isOk())
-				//.andExpect(jsonPath("$.content[*]").exists()) //content[*] - oznacza całą zawartość tablicy content
-				//.andExpect(jsonPath("$.content.length()").value(1))
 				.andExpect(jsonPath("$.projektId").value(projekt.getProjektId()))
 				.andExpect(jsonPath("$.nazwa").value(projekt.getNazwa()));
 
-		//mockMvc.perform(get("https://localhost:8443/api/projekty/1"))
-		//				.andExpect(status().isOk())
-		//				.andExpect(content().contentType("application/json"))
-		//				.andDo(print())
-		//				.andExpect(jsonPath("$.projektId").value(1))
-		//				.andExpect(status().isOk());
-		//				//.andExpect(jsonPath("$.").exists());
-
-		//mockMvc.perform(get(apiPath).contentType(MediaType.APPLICATION_JSON))
-		//		.andDo(print())
-		//		.andExpect(status().isOk())
-		//		.andExpect(jsonPath("$.content[*]").exists()); //content[*] - oznacza całą zawartość tablicy content
-				//.andExpect(jsonPath("$.content.length()").value(1))
-				//.andExpect(jsonPath("$.content[0].projektId").value(projekt.getProjektId()))
-				//.andExpect(jsonPath("$.content[0].nazwa").value(projekt.getNazwa()));
 
 		verify(mockProjektService, times(1)).getProjekt(projekt.getProjektId());
 		verifyNoMoreInteractions(mockProjektService);
 	}
+	@Test
+    public void createProjekt() throws Exception{
+	    Projekt projekt = new Projekt(null, "Nazwa3", "Opis3", null, LocalDate.of(2020, 6, 7));
+	    String jsonProjekt = jacksonTester.write(projekt).getJson();
+	    projekt.setProjektId(3);
+
+	    when(mockProjektService.addProject(any(Projekt.class)))
+				.thenReturn(projekt);
+
+	    mockMvc.perform(post(apiPath).content(jsonProjekt).contentType(MediaType.APPLICATION_JSON)
+		.accept(MediaType.ALL))
+				.andDo(print())
+				.andExpect(status().isCreated())
+				.andExpect(header().string("location",contains(apiPath + "/" + projekt.getProjektId())));
+
+
+	    
+    }
 
 	/*@Test
 	void getprojekty(){
